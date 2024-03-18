@@ -11,9 +11,27 @@ goods_router = APIRouter(prefix="/goods")
 security = HTTPBasic()
 
 
-@goods_router.get("/all/")
+@goods_router.get("/all")
 def get_all_goods(db: Session = Depends(get_db)):
-    products = db.query(Product.id, Product.title).filter(Product.in_store == True).all()
+    products = db.query(Product).filter(Product.in_store == True).all()
     if not products:
         return {"message": "No products found in store"}
     return {"our products": products}
+
+
+@goods_router.get('/{product_id}')
+def get_product_by_id(product_id: int, db: Session = Depends(get_db)):
+    id_list = [int(item[0]) for item in db.query(Product.id).all()]
+    if product_id in id_list:
+        return db.query(Product).filter(Product.id == product_id).first()
+    else:
+        return {"message": f"product with id {product_id} not found"}
+
+
+@goods_router.post('/new')
+def create_new_product(product: PyProduct, db: Session = Depends(get_db)):
+    new_product = Product(title=product.title, description=product.description, in_store=True, quantity=1)
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+    return {"message": "new product added"}

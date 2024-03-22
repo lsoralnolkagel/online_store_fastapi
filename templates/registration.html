@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Create new account</h1>
+Fill the following fields:
+<form action="" method="post">
+    <label for="username"><b>Username</b></label>
+    <input type="text" placeholder="Your username" name="username" required>
+    <label for="full_name"><b>Full name</b></label>
+    <input type="text" placeholder="John Doe" name="full_name" required>
+    <label for="email"><b>Email</b></label>
+    <input type="email" placeholder="example@mail.ru" name="email" required>
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter password" name="password" required>
+    <label for="password_repeat"><b>Repeat password</b></label>
+    <input type="password" placeholder="Repeat password" name="password_repeat" required>
+
+    <button type="submit" class="registerbtn">Register</button>
+</form>
+{% endblock %}

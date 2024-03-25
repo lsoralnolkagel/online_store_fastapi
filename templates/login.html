@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Log in your account</h1>
+Fill the following fields:
+<form action="" method="post">
+    <p><label for="username"><b>Username</b></label>
+        <input type="text" placeholder="Your username" name="username" required></p>
+    <p><label for="password"><b>Password</b></label>
+        <input type="password" placeholder="Your password" name="password" required></p>
+
+
+    <button type="submit" class="loginbtn">Log in</button>
+</form>
+{% endblock %}

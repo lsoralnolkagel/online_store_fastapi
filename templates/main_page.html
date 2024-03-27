@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Welcome to our website!</h1>
+<p>Our best goods:</p>
+<ul>
+  {% for product in goods %}
+    <li>{{ product.title }} - {{ product.description }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

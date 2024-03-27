@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, Request, HTTPException, Form, Header
+from fastapi import APIRouter, Depends, Request, responses, HTTPException, Form, Header
 from fastapi.security import HTTPBasic, OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from typing import Optional
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from app.api.models.user import UserToRegister, UserToLogin
 from app.api.db.database import get_db
@@ -51,13 +51,37 @@ def show_login_form(request: Request):
 def login_user(request: Request, username: str = Form(...), password: str = Form(...)):
     if request.method == "POST":
         if not authenticate_user(username, password):
-            return templates.TemplateResponse("error.html")
+            return templates.TemplateResponse("error.html", {"request": request})
         access_token = create_access_token(data={"sub": username})
-        return templates.TemplateResponse("suc_log.html", {"request": request, "access_token": access_token, "token_type": "bearer"})
+        response = templates.TemplateResponse("suc_log.html", {"request": request, "token": access_token, "token_type": "Bearer"})
+        response.set_cookie(key="access_token", value=access_token)
+        return response
+
+
+@user_router.get("/logout")
+def logout_user(request: Request):
+    response = templates.TemplateResponse("logout.html", {"request": request})
+    response.delete_cookie(key="access_token")
+    return response
 
 
 users_router = APIRouter(prefix="/users")
 
 
 @users_router.get("/me")
-def get_my_page(request: Request):
+def get_my_page(request: Request, db: Session = Depends(get_db)):
+    token = request.cookies.get('access_token')
+    current_user = get_current_user(token, db)
+    if current_user:
+        return templates.TemplateResponse("my_page.html", {"request": request, "user": current_user})
+    else:
+        return templates.TemplateResponse("error.html", {"request": request})
+
+
+@users_router.get("/{id}")
+def get_user_by_id(request: Request, id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == id).first()
+    if user:
+        return templates.TemplateResponse("users_page.html", {"request": request, "user": user})
+    else:
+        return templates.TemplateResponse("user_error.html", {"request": request})

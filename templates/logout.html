@@ -5,21 +5,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     {% block head %}{% endblock %}
     <title>Online-store</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
 </head>
 <body>
     <nav class="flex justify-between text-3xl my-3">
         <ul class="flex ml-10">
-            <li><a href="http://127.0.0.1:8000/">Online-store</a></li>
+            <li>Online-store</li>
         </ul>
         <ul class="flex gap-5 nr-10">
-            <li><a href="http://127.0.0.1:8000/users/me">My account</a></li>
-            <li><a href="http://127.0.0.1:8000/auth/logout">Log out</a> </li>
+            <li><a href="http://127.0.0.1:8000/auth/login">Log in</a> </li>
         </ul>
     </nav>
     <hr>
     <div id="content">
-        {% block content %}{% endblock %}
+        {% block content %}You are logged out of your account{% endblock %}
     </div>
 </body>
 </html>
